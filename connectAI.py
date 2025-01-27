@@ -30,8 +30,31 @@ def openai(req_body):
             max_tokens=4096,
             top_p=1
         )
-
-        return(response.choices[0].message.content)
+        output = response.choices[0].message.content
+        connection=dbconnection()
+        cursor = connection.cursor()
+        query = """SELECT userschat FROM usersChat where userId = %s AND is_active = True"""
+        cursor.execute(query, (req_body["userId"],))
+        users = cursor.fetchone()       
+        if users is None:
+            chat=[]
+            chat.append(Question)
+            chat.append(output)
+            DumpChat=json.dumps(chat)
+            query = """INSERT INTO usersChat (userschat, userid) VALUES (%s, %s)"""
+            cursor.execute(query, (DumpChat, req_body["userId"]))
+        else:
+            chat = json.loads(users[0]) 
+            chat.append(Question)
+            chat.append(output)
+            DumpChat=json.dumps(chat)
+            query = """UPDATE usersChat SET userschat = %s WHERE userid = %s"""
+            cursor.execute(query, (DumpChat, req_body["userId"]))
+        connection.commit()
+        cursor.close()
+        connection.close() 
+        return chat
+        
     except Exception as e:
          return {
                 "Error":str(e),
