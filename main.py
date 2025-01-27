@@ -6,8 +6,8 @@
 from flask import Flask, request, jsonify 
 from flask_cors import CORS 
 from controller import * 
-app = Flask(__name__) 
-CORS(app) 
+app = Flask(__name__)
+CORS(app)
 
 # This Route is used to the connect the Azure Open AI gpt-4o and implement the 3th tier.
 @app.route('/openAi', methods=['POST'])
@@ -16,7 +16,6 @@ def openAi():
         data = request.get_json()
         response = AzureOpenAIController(data)
         return {
-            
             "data":response,
             "statusCode":200
         }
@@ -34,7 +33,6 @@ def google():
         data = request.get_json()
         response = googleSerpController(data)
         return {
-            
             "data":response,
             "statusCode":200
         }    
@@ -52,7 +50,6 @@ def getUsersDetails():
         data = request.get_json()
         response = getUsersDetailsController(data)
         return {
-            
             "data":response,
             "statusCode":200
         },200
@@ -70,7 +67,6 @@ def signup():
         data = request.get_json()
         response = signupController(data)
         return {
-            
             "data":response,
             "statusCode":200
         },200
@@ -88,7 +84,6 @@ def signIn():
         data = request.get_json()
         response = signInController(data)
         return {
-            
             "data":response,
             "statusCode":200
         },200
@@ -98,7 +93,7 @@ def signIn():
                 "Error":str(e),
                 "statusCode":500
             }),400
-        
+     
 
 # This is the main function in which the application runs.
 if __name__ == "__main__":
